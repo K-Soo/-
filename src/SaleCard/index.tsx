@@ -1,16 +1,16 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 import CrownIcon from '../Icon/CrownIcon';
 
-type TAlign = 'vertical_A' | 'vertical_B' | 'horizontal' | 'vertical_non_crown_A';
+type TAlign = 'vert_crown_A' | 'vert_crown_B' | 'horizontal' | 'vert_non_crown_A';
 
 interface ISaleCardProps {
   className?: string;
   align?: TAlign;
 }
 
-const desc = [
+const crownDesc = [
   { value: '월세 0억 / 00', label: 'price', className: 'description--price' },
   { value: '아파트 | 트윈타워', label: 'type', className: 'description--type' },
   { value: '관리비 : 00만 | 000m(00P)', label: 'cost', className: 'description--cost' },
@@ -23,7 +23,19 @@ const desc = [
 ];
 
 const SaleCard: FunctionComponent<ISaleCardProps> = ({ align, className }) => {
-  console.log('align: ', align);
+  const [desc, setDesc] = useState<string>();
+
+  useEffect(() => {
+    if (align === 'vert_crown_B') {
+      let tmp = crownDesc[3];
+      crownDesc[3] = crownDesc[2];
+      crownDesc[2] = tmp;
+      console.log(crownDesc);
+    }
+    const modified = align?.slice(0, -2);
+    setDesc(modified);
+  }, [align]);
+
   return (
     <section className={className}>
       <figure className='container'>
@@ -37,113 +49,151 @@ const SaleCard: FunctionComponent<ISaleCardProps> = ({ align, className }) => {
         </div>
 
         <figcaption className='description'>
-          {align === 'vertical_A' ||
-            ('vertical_B' && (
-              <ul>
-                <CrownIcon
-                  className='description--icon'
-                  data-show={align !== 'vertical_B' || 'vertical_A'}
-                />
-                {desc.map(({ className, value, label }) => (
-                  <li key={label} className={className}>
-                    {value}
-                  </li>
-                ))}
-              </ul>
-            ))}
+          {desc === 'vert_crown' && (
+            <ul>
+              <CrownIcon className='description--icon' />
+              {crownDesc.map(({ className, value, label }) => (
+                <li key={label} className={className}>
+                  {value}
+                </li>
+              ))}
+            </ul>
+          )}
         </figcaption>
       </figure>
     </section>
   );
 };
 const CommonFlex = css`
-  flex-direction: column;
-  padding: 0 15px;
-  .image__box {
-    position: relative;
-    &--image {
-      width: 330px;
-      border-radius: 5px;
-      height: 172px;
-      margin: 0 auto 19px 0;
-    }
-    &--auth {
-      position: absolute;
-      top: 9px;
-      left: 6px;
-      color: #fff;
-      font-size: 11px;
-      width: 44px;
-      border-radius: 11px;
-      background-color: #212529;
-      opacity: 0.6;
-      text-align: center;
-      line-height: 21px;
-      width: 60px;
-      height: 21px;
-    }
-  }
-  .description {
-    color: #212529;
-    font-size: 15px;
-    ul {
+  .container {
+    display: flex;
+    margin: 0 auto;
+    .image__box {
       position: relative;
+      margin: 0 auto;
+      &--image {
+        width: 330px;
+        border-radius: 5px;
+        height: 172px;
+        object-fit: cover;
+        display: block;
+        margin: 0 0 19px 0;
+      }
+      &--auth {
+        position: absolute;
+        top: 9px;
+        left: 6px;
+        color: #fff;
+        font-size: 11px;
+        width: 44px;
+        border-radius: 11px;
+        background-color: #212529;
+        opacity: 0.6;
+        text-align: center;
+        line-height: 21px;
+        width: 60px;
+        height: 21px;
+      }
     }
-    &--icon {
-      margin-right: 10px;
-      display: inline-block;
-    }
-    &--price {
-      display: inline-block;
-      width: 70%;
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-    &--type {
-      display: inline-block;
-    }
-    &--cost {
-      color: #999;
-      display: inline-block;
-      position: absolute;
-      right: 0;
-    }
-    &--address {
-      margin-top: 7px;
+    .description {
+      color: #212529;
+      font-size: 15px;
+      margin: 0 auto;
+      ul {
+        position: relative;
+        width: 330px;
+      }
+      &--icon {
+        margin-right: 10px;
+        display: inline-block;
+      }
+      &--price {
+        display: inline-block;
+        width: 70%;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      &--type {
+        display: inline-block;
+      }
+      &--cost {
+        color: #868e96;
+        display: inline-block;
+        position: absolute;
+        right: 0;
+      }
+      &--address {
+        margin-top: 7px;
+      }
     }
   }
 `;
 
 export default styled(SaleCard)`
-  .container {
-    display: flex;
-    width: 368px;
-    margin: 0 auto;
-    // vertical
-    ${({ align }) =>
-      align === 'vertical_A' &&
-      css`
-        ${CommonFlex}
+  // vertical crown
+  ${({ align }) =>
+    align === 'vert_crown_A' &&
+    css`
+      ${CommonFlex}
+      .container {
+        flex-direction: column;
+        width: 360px;
         .description {
           &--provider {
             display: none;
           }
         }
-      `}
-    ${({ align }) =>
-      align === 'vertical_B' &&
-      css`
-        ${CommonFlex}
+      }
+    `}
+
+  ${({ align }) =>
+    align === 'vert_crown_B' &&
+    css`
+      ${CommonFlex}
+      .container {
+        flex-direction: column;
+        width: 462px;
+        .image__box {
+          position: relative;
+          &--image {
+            width: 405px;
+            border-radius: 5px;
+            height: 228px;
+            margin-bottom: 18px;
+          }
+          &--auth {
+            top: 13px;
+            left: 19px;
+            width: 44px;
+            border-radius: 13px;
+            opacity: 0.6;
+            line-height: 26px;
+            width: 71px;
+            height: 26px;
+          }
+        }
         .description {
+          ul {
+            width: 405px;
+          }
+          &--address {
+            display: inline-block;
+            margin-left: 30px;
+          }
+          &--cost {
+            display: block;
+            position: sticky;
+            margin: 7px 0;
+          }
           li {
             :last-child {
-              margin-top: 7px;
+              margin-bottom: 21px;
             }
           }
         }
-      `}
-  }
+      }
+    `}
 `;
 
 // export default styled(SaleCard)`

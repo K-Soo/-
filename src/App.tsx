@@ -2,14 +2,15 @@ import React from 'react';
 import Realtor from './RealtorCard';
 import SaleCard from './SaleCard';
 
-//vertical_A : 중개사 미포함  , vertical_B: 중개사 포함  vertical_non_crown_A
+// vert_crown_A : 중개사 미포함  , vert_crown_B: 중개사 포함
+// vert_non_crown_0Links , vert_non_crown_1Links , vert_non_crown_2Links
 
 const App: React.FC = () => {
   return (
     <>
       {/* <Realtor realtor='asd' /> */}
 
-      <SaleCard align='vertical_B' />
+      <SaleCard align='vert_crown_B' />
     </>
   );
 };
